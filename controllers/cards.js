@@ -33,14 +33,11 @@ module.exports.deleteCard = async (req, res) => {
     const card = await Card.findById(cardId);
     if (card === null) {
       res.status(404).send({ message: 'Объект не найден' });
+    } else if (!(card.owner.toString() === userId)) {
+      res.status(404).send({ message: 'Вы не можете удалить чужую карточку' });
     } else {
-      const cardToDelete = await Card.findById({ _id: cardId, owner: userId });
-      if (!cardToDelete) {
-        res.status(404).send({ message: 'Вы не можете удалить чужую карточку' });
-      } else {
-        cardToDelete.remove();
-        return res.send(cardToDelete);
-      }
+      await card.remove();
+      return res.send(card);
     }
   } catch (err) {
     if (err.name === 'CastError') {
@@ -52,17 +49,16 @@ module.exports.deleteCard = async (req, res) => {
 };
 
 module.exports.likeCard = async (req, res) => {
+  const { cardId } = req.params;
   try {
-    const { cardId } = req.params;
-    const card = await Card.findById(cardId);
-    if (card === null) {
+    const cardToLike = await Card.findByIdAndUpdate(
+      cardId,
+      { $addToSet: { likes: req.user._id } },
+      { new: true },
+    );
+    if (cardToLike === null) {
       res.status(404).send({ message: 'Объект не найден' });
     } else {
-      const cardToLike = await Card.findByIdAndUpdate(
-        cardId,
-        { $addToSet: { likes: req.user._id } },
-        { new: true },
-      );
       return res.send(cardToLike);
     }
   } catch (err) {
@@ -75,17 +71,16 @@ module.exports.likeCard = async (req, res) => {
 };
 
 module.exports.dislikeCard = async (req, res) => {
+  const { cardId } = req.params;
   try {
-    const { cardId } = req.params;
-    const card = await Card.findById(cardId);
-    if (card === null) {
+    const cardToDislike = await Card.findByIdAndUpdate(
+      cardId,
+      { $pull: { likes: req.user._id } },
+      { new: true },
+    );
+    if (cardToDislike === null) {
       res.status(404).send({ message: 'Объект не найден' });
     } else {
-      const cardToDislike = await Card.findByIdAndUpdate(
-        cardId,
-        { $pull: { likes: req.user._id } },
-        { new: true },
-      );
       return res.send(cardToDislike);
     }
   } catch (err) {

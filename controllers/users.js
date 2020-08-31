@@ -2,6 +2,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 module.exports.createUser = async (req, res) => {
   const {
     name, about, avatar, email, password,
@@ -37,11 +39,12 @@ module.exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findUserByCredentials(email, password);
-    const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
+    const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
     res
       .cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
+        sameSite: 'strict',
       });
     return res.send({ token });
   } catch (err) {
@@ -79,19 +82,18 @@ module.exports.updateProfile = async (req, res) => {
   const { name, about } = req.body;
 
   try {
-    const user = await User.findById(req.params.id);
-    if (user === null) {
+    const userToUpdate = await User.findByIdAndUpdate(
+      req.user._id,
+      { name, about },
+      {
+        new: true,
+        runValidators: true,
+        upsert: true,
+      },
+    );
+    if (userToUpdate === null) {
       res.status(404).send({ message: 'Нет такого пользователя' });
     } else {
-      const userToUpdate = await User.findByIdAndUpdate(
-        req.user._id,
-        { name, about },
-        {
-          new: true,
-          runValidators: true,
-          upsert: true,
-        },
-      );
       return res.send(userToUpdate);
     }
   } catch (err) {
@@ -107,19 +109,18 @@ module.exports.updateAvatar = async (req, res) => {
   const { avatar } = req.body;
 
   try {
-    const user = await User.findById(req.params.id);
-    if (user === null) {
+    const userToUpdate = await User.findByIdAndUpdate(
+      req.user._id,
+      { avatar },
+      {
+        new: true,
+        runValidators: true,
+        upsert: true,
+      },
+    );
+    if (userToUpdate === null) {
       res.status(404).send({ message: 'Нет такого пользователя' });
     } else {
-      const userToUpdate = await User.findByIdAndUpdate(
-        req.user._id,
-        { avatar },
-        {
-          new: true,
-          runValidators: true,
-          upsert: true,
-        },
-      );
       return res.send(userToUpdate);
     }
   } catch (err) {

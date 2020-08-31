@@ -27,9 +27,10 @@ Node.js, express.js, MongoDBб, ES6, OOP, CSS3, HTML5, BEM
 - [validator](https://www.npmjs.com/package/validator)
 - [helmet](https://helmetjs.github.io/)
 - [express-rate-limit](https://www.npmjs.com/package/express-rate-limit)
-- [bcryptjs] (https://www.npmjs.com/package/bcryptjs)
-- [jsonwebtoken] (https://www.npmjs.com/package/jsonwebtoken)
-- [cookie-parser] (https://www.npmjs.com/package/cookie-parser)
+- [bcryptjs](https://www.npmjs.com/package/bcryptjs)
+- [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)
+- [cookie-parser](https://www.npmjs.com/package/cookie-parser)
+- [dotenv](https://www.npmjs.com/package/dotenv)
 - mongoose
 
 ## Инструкции по запуску:

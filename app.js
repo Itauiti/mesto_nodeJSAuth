@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const rateLimit = require("express-rate-limit");
 const cookieParser = require('cookie-parser');
+require('dotenv').config();
 
 const limiter = rateLimit({
   windowMs: 25 * 60 * 1000,
