@@ -34,7 +34,7 @@ module.exports.deleteCard = async (req, res) => {
     if (card === null) {
       res.status(404).send({ message: 'Объект не найден' });
     } else if (!(card.owner.toString() === userId)) {
-      res.status(404).send({ message: 'Вы не можете удалить чужую карточку' });
+      res.status(403).send({ message: 'Вы не можете удалить чужую карточку' });
     } else {
       await card.remove();
       return res.send(card);
