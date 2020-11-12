@@ -36,7 +36,7 @@
 - пользователь не может редактировать чужой профиль и не может менять чужой аватар.
 
 ## Стэк технологий:
-Node.js, express.js, MongoDBб, ES6, OOP, CSS3, HTML5, BEM
+Node.js, express.js, MongoDB
 
 ## Пакеты, которые используются в сборках:
 - [body-parser](https://www.npmjs.com/package/body-parser)
